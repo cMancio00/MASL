@@ -1,0 +1,67 @@
+ \documentclass{beamer}
+
+\usetheme{Singapore}
+
+\usepackage[italian]{babel}
+\usepackage{listings}
+
+
+\title{Parallelizzare una simulazione Monte Carlo con Numba} 
+\author{Christian Mancini}
+\institute{Università degli studi di Firenze}
+\date{\today}
+
+ \begin{document}
+ \begin{frame}
+    \titlepage
+ \end{frame}
+
+\begin{frame}
+    \frametitle{Definizioni iniziali}
+    \begin{itemize}
+        \item Parallelizzare significa portare avanti tante computazioni simultaneamente.
+        \item Si possono parallelizzare solo parti di programma indipendenti
+        \item Numba ci permette di distribuire la computazione su tutta la CPU e/o GPU
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Parallelizzazione di una Piccola Simulazione}
+    \begin{lstlisting}[language=Python, basicstyle=\ttfamily\scriptsize, keywordstyle=\color{blue}, commentstyle=\color{green!40!black}, numbers=left, numberstyle=\tiny, numbersep=5pt]
+    @njit(parallel=True)
+    def replicate(sample_size, number_of_simulation,
+                  a, b, simulation_results):
+        for i in prange(number_of_simulation):
+            np.random.seed(111 + i)
+            simulated_data = np.random.uniform(
+                low=a,
+                high=b,
+                size=(sample_size,)
+                )
+            simulation_results[i] = simulated_data.mean()
+        return simulation_results.mean()
+    \end{lstlisting}
+    \end{frame}
+    
+
+    
+
+
+
+
+
+
+
+
+ \begin{frame}
+
+    \begin{thebibliography}{10}
+    \bibitem{numba}
+    \alert{Numba documentation}
+    \newblock{\url{https://numba.readthedocs.io/en/stable/user/jit.html}}
+
+    \end{thebibliography}
+
+    \end{frame}
+
+
+ \end{document}
